@@ -23,7 +23,7 @@ public class ConsumerAPI {
 	public ConsumerAPI() {
 
 		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-		System.out.print("Enter <topic-name> <consumer-count> <begining-offset(true/false)--> ");
+		System.out.print("Enter <topic-name> <consumer-count> <seek position(B)> --> ");
 		String command = null;
 		try {
 			command = reader.readLine();
@@ -40,7 +40,7 @@ public class ConsumerAPI {
 		if (params.length > 1) {
 			this.consumerCount = Integer.parseInt(params[1]);
 		}
-		this.seekPoistion = "B";
+		this.seekPoistion = "E";
 		if (params.length > 2) {
 			this.seekPoistion = params[2];
 		}
@@ -53,12 +53,13 @@ public class ConsumerAPI {
 		ExecutorService executer = Executors.newFixedThreadPool(this.consumerCount);
 		for (int i = 0; i < this.consumerCount; i++) {
 			final StarterConsumer consumer = new StarterConsumer(this.topicName);
-			try {
-				Thread.sleep(5000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+//			try {
+//				Thread.sleep(5000);
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			}
 			executer.execute(new Runnable() {
+				
 				@Override
 				public void run() {
 					consumer.startConsume(seekPoistion);

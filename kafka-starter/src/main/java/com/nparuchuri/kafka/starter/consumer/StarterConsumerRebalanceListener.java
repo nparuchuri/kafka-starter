@@ -11,12 +11,11 @@ public class StarterConsumerRebalanceListener implements ConsumerRebalanceListen
 	
 	private static Logger logger = LogManager.getLogger(StarterConsumerRebalanceListener.class);
 
-	@Override
+
 	public void onPartitionsRevoked(Collection<TopicPartition> partitions) {
 		logger.info("Partitions Revoked" + partitions);
 	}
 
-	@Override
 	public void onPartitionsAssigned(Collection<TopicPartition> partitions) {
 		logger.info("Partitions Assigned" + partitions);
 	}

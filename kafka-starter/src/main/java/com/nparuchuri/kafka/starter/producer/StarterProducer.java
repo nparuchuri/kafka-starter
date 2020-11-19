@@ -1,5 +1,6 @@
 package com.nparuchuri.kafka.starter.producer;
 
+import java.util.Arrays;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -8,6 +9,7 @@ import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
+import org.apache.kafka.common.header.Header;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,7 +30,22 @@ public class StarterProducer {
 	}
 
 	public Future<RecordMetadata> asyncSendMessage(final String key, final String value) throws ProducerException {
+		
+		
+		Header h1 = new Header() {
+			@Override
+			public byte[] value() {
+				return "Value1".getBytes();
+			}
+			
+			@Override
+			public String key() {
+				return "Key1";
+			}
+		};
+		
 		final ProducerRecord<String, String> record = new ProducerRecord<>(this.topicName, key, value);
+		
 		return producer.send(record , new Callback() {
 			@Override
 			public void onCompletion(RecordMetadata metadata, Exception exception) {

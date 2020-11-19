@@ -5,8 +5,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,11 +32,13 @@ public class ProducerAPI {
 	private int producerCount = 1;
 
 	private boolean sync = false;
+	
+	private int dealyMilliseconds = 0;
 
 	public ProducerAPI() {
 
 		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-		System.out.print("Enter <topic-name> <msg-count> <producer-count> --> ");
+		System.out.print("Enter <topic-name> <msg-count> <producer-count>  <sync(true/false)> <delay ms> --> ");
 		String command = null;
 		try {
 			command = reader.readLine();
@@ -56,7 +61,11 @@ public class ProducerAPI {
 		if (params.length > 3) {
 			this.sync = Boolean.parseBoolean(params[3]);
 		}
-
+		
+		if (params.length > 4) {
+			this.dealyMilliseconds = Integer.parseInt(params[4]);
+		}
+		
 	}
 	
 	public static void main(String[] args) {
@@ -82,9 +91,12 @@ public class ProducerAPI {
 							producer.syncSendMessage(msg.getKey(), msg.getValue());
 						} else {
 							producer.asyncSendMessage(msg.getKey(), msg.getValue());
+							
 						}
 						try {
-							Thread.sleep(500);
+							if ( dealyMilliseconds > 0 ) {
+								Thread.sleep(dealyMilliseconds);
+							}
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}
